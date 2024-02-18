@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://nextbooking-client.vercel.app/"],
+    origin: ["https://nextbooking-client.vercel.app"],
     methods: ["POST", "GET"],
     credentials: true,
   })
