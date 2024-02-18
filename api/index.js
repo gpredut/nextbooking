@@ -7,9 +7,17 @@ import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import https from "https";
+import fs from "fs";
 
 const app = express();
 dotenv.config();
+
+const options = {
+  key: fs.readFileSync('path/to/privatekey.pem'),
+  cert: fs.readFileSync('path/to/certificate.pem')
+};
+
 
 const connect = async () => {
   try {
@@ -55,7 +63,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(8800, () => {
+https.createServer(options, app).listen(8800, () => {
   connect();
   console.log("Connected to backend.");
 });
