@@ -35,6 +35,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.json("Hello");
+});
+
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
