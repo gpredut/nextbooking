@@ -2,7 +2,7 @@ import useFetch from "../hooks/useFetch.js";
 import "./featuredProperties.css";
 
 const FeaturedProperties = () => {
-  const { data, loading } = useFetch("https://nextbooking-api.vercel.app/hotels?featured=true&limit=4");
+  const { data, loading } = useFetch("/hotels?featured=true&limit=4");
   return (
     <div className="fp">
       {loading ? (
