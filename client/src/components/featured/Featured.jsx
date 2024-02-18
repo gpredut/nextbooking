@@ -3,7 +3,7 @@ import "./featured.css";
 
 const Featured = () => {
   const { data, loading } = useFetch(
-    "https://nextbooking-api.vercel.app/hotels/countByCity?cities=bucharest,sinaia,hunedoara"
+    "/hotels/countByCity?cities=bucharest,sinaia,hunedoara"
   );
 
   return (
