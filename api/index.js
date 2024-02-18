@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ["https://nextbooking-client.vercel.app"],
-    methods: ["POST", "GET", "PUT", "DEL],
+    methods: ["POST", "GET", "PUT", "DELETE],
     credentials: true,
   })
 );
