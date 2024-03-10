@@ -1,12 +1,12 @@
-import "./list.css";
-import Navbar from "../../components/navbar/Navbar";
-import Header from "../../components/header/Header";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import { format } from "date-fns";
-import { DateRange } from "react-date-range";
-import SearchItem from "../../components/searchItem/SearchItem";
-import useFetch from "../../components/hooks/useFetch.js";
+import { useEffect, useState } from 'react';
+import './list.css';
+import Navbar from '../../components/navbar/Navbar';
+import Header from '../../components/header/Header';
+import { useLocation } from 'react-router-dom';
+import { format } from 'date-fns';
+import { DateRange } from 'react-date-range';
+import SearchItem from '../../components/searchItem/SearchItem';
+import useFetch from '../../components/hooks/useFetch.js';
 
 const List = () => {
   const location = useLocation();
@@ -16,13 +16,33 @@ const List = () => {
   const [options, setOptions] = useState(location.state.options);
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(999);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const { data, loading, reFetch } = useFetch(
-    `https://nextbooking-api.vercel.app/api/hotels/countByType?city=${destination}&min=${min}&max=${max}`
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://nextbooking-api.vercel.app/api/hotels/countByType?city=${destination}&min=${min}&max=${max}`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const jsonData = await response.json();
+        setData(jsonData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [destination, min, max]);
 
   const handleClick = () => {
-    reFetch();
+    fetchData();
   };
 
   return (
@@ -35,14 +55,20 @@ const List = () => {
             <h1 className="lsTitle">Search</h1>
             <div className="lsItem">
               <label>Destination</label>
-              <input placeholder={destination} type="text" />
+              <input
+                placeholder={destination}
+                type="text"
+                onChange={(e) => setDestination(e.target.value)}
+              />
             </div>
             <div className="lsItem">
               <label>Check-in Date</label>
-              <span onClick={() => setOpenDate(!openDate)}>{`${format(
-                dates[0].startDate,
-                "MM/dd/yyyy"
-              )} to ${format(dates[0].endDate, "MM/dd/yyyy")}`}</span>
+              <span onClick={() => setOpenDate(!openDate)}>
+                {`${format(dates[0].startDate, 'MM/dd/yyyy')} to ${format(
+                  dates[0].endDate,
+                  'MM/dd/yyyy'
+                )}`}
+              </span>
               {openDate && (
                 <DateRange
                   onChange={(item) => setDates([item.selection])}
@@ -106,13 +132,13 @@ const List = () => {
           </div>
           <div className="listResult">
             {loading ? (
-              "loading"
+              'loading'
+            ) : error ? (
+              `Error fetching data: ${error}`
             ) : (
               <>
                 {Array.isArray(data) && data.length > 0 ? (
-                  data.map((item) => (
-                    <SearchItem item={item} key={item._id} />
-                  ))
+                  data.map((item) => <SearchItem item={item} key={item._id} />)
                 ) : (
                   <div>No results found</div>
                 )}
@@ -126,4 +152,3 @@ const List = () => {
 };
 
 export default List;
-
