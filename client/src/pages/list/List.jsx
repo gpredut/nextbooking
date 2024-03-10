@@ -17,9 +17,9 @@ const List = () => {
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(999);
 
-  const { data, loading, reFetch } = useFetch(
-    `/hotels?city=${destination}&min=${min}&max=${max}`
-  );
+ const { data, loading, reFetch } = useFetch(
+  `https://nextbooking-api.vercel.app/hotels?city=${destination}&min=${min}&max=${max}`
+);
 
   const handleClick = () => {
     reFetch();
