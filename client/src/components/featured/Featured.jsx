@@ -2,14 +2,16 @@ import useFetch from "../hooks/useFetch.js";
 import "./featured.css";
 
 const Featured = () => {
-  const { data, loading } = useFetch(
-    "/hotels/countByCity?cities=bucharest,sinaia,hunedoara"
+  const { data, loading, error } = useFetch(
+    "/api/hotels/countByCity?cities=bucharest,sinaia,hunedoara"
   );
 
   return (
     <div className="featured">
       {loading ? (
         "Loading, please wait"
+      ) : error ? (
+        "Error fetching data"
       ) : (
         <>
           <div className="featuredItem">
