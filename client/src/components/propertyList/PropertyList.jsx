@@ -13,20 +13,21 @@ const PropertyList = () => {
     "https://i.im.ge/2024/02/14/cWpP6L.photo-1564013799919-ab600027ffc6q80w2070autoformatfitcropixlibrb-4-0.jpg",
     "https://i.im.ge/2024/02/14/cWp8SF.photo-1510798831971-661eb04b3739q80w1974autoformatfitcropixlibrb-4-0.jpg",
   ];
+
   return (
     <div className="pList">
       {loading ? (
-        "loading"
+        "Loading..."
       ) : (
         <>
           {data &&
-            images.map((img, i) => (
-              <div className="pListItem" key={i}>
-                <img src={img} alt="" className="pListImg" />
+            data.map((item, i) => (
+              <div className="pListItem" key={item.type}>
+                <img src={images[i]} alt={item.type} className="pListImg" />
                 <div className="pListTitles">
-                  <h1>{data[i]?.type}</h1>
+                  <h1>{item.type}</h1>
                   <h2>
-                    {data[i]?.count} {data[i]?.type}
+                    {item.count} {item.type}
                   </h2>
                 </div>
               </div>
@@ -36,4 +37,5 @@ const PropertyList = () => {
     </div>
   );
 };
+
 export default PropertyList;
