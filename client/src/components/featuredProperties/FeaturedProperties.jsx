@@ -17,7 +17,7 @@ const FeaturedProperties = () => {
         "Loading, please wait..."
       ) : (
         <>
-          {data && data.map((item) => (
+          {Array.isArray(data) && data.map((item) => (
             <div className="fpItem" key={item._id}>
               {/* Check if photos exist */}
               {item.photos && item.photos.length > 0 ? (
