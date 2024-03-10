@@ -36,7 +36,7 @@ const Featured = () => {
       {loading ? (
         "Loading, please wait"
       ) : error ? (
-        "Error fetching data"
+        `Error fetching data: ${error}`
       ) : (
         <>
           {citiesData.map((cityData, index) => (
