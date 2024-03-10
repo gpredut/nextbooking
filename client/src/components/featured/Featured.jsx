@@ -1,10 +1,35 @@
-import useFetch from "../hooks/useFetch.js";
-import "./featured.css";
+import { useEffect, useState } from 'react';
+import './featured.css';
 
 const Featured = () => {
-  const { data, loading, error } = useFetch(
-    "/api/hotels/countByCity?cities=bucharest,sinaia,hunedoara"
-  );
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/hotels/countByCity?cities=bucharest,sinaia,hunedoara");
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const jsonData = await response.json();
+        setData(jsonData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const images = [
+    "https://i.im.ge/2024/02/14/cWpWV9.photo-1566827954254-0c0692424c04q80w1974autoformatfitcropixlibrb-4-0.jpg",
+    "https://i.im.ge/2024/02/14/cWpV08.photo-1608297644370-d98dfbbe30faq80w1964autoformatfitcropixlibrb-4-0.jpg",
+    "https://i.im.ge/2024/02/14/cWvM51.photo-1599082786861-4f1f038a9fb5q80w1973autoformatfitcropixlibrb-4-0.jpg"
+  ];
 
   return (
     <div className="featured">
@@ -14,40 +39,19 @@ const Featured = () => {
         "Error fetching data"
       ) : (
         <>
-          <div className="featuredItem">
-            <img
-              src="https://i.im.ge/2024/02/14/cWpWV9.photo-1566827954254-0c0692424c04q80w1974autoformatfitcropixlibrb-4-0.jpg"
-              alt=""
-              className="featuredImg"
-            />
-            <div className="featuredTitles">
-              <h1>Bucharest</h1>
-              <h2>{data[0]} properties</h2>
+          {data.map((city, index) => (
+            <div className="featuredItem" key={city.name}>
+              <img
+                src={images[index]}
+                alt=""
+                className="featuredImg"
+              />
+              <div className="featuredTitles">
+                <h1>{city.name}</h1>
+                <h2>{city.count} properties</h2>
+              </div>
             </div>
-          </div>
-
-          <div className="featuredItem">
-            <img
-              src="https://i.im.ge/2024/02/14/cWpV08.photo-1608297644370-d98dfbbe30faq80w1964autoformatfitcropixlibrb-4-0.jpg"
-              alt=""
-              className="featuredImg"
-            />
-            <div className="featuredTitles">
-              <h1>Sinaia</h1>
-              <h2>{data[1]} properties</h2>
-            </div>
-          </div>
-          <div className="featuredItem">
-            <img
-              src="https://i.im.ge/2024/02/14/cWvM51.photo-1599082786861-4f1f038a9fb5q80w1973autoformatfitcropixlibrb-4-0.jpg"
-              alt=""
-              className="featuredImg"
-            />
-            <div className="featuredTitles">
-              <h1>Hunedoara</h1>
-              <h2>{data[2]} properties</h2>
-            </div>
-          </div>
+          ))}
         </>
       )}
     </div>
