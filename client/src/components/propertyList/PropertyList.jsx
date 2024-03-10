@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./propertyList.css";
 
 const PropertyList = () => {
-  const { data, loading, error } = useFetch("/api/hotels/countByType");
+  const { data, loading, error } = useFetch("https://nextbooking-api.vercel.app/api/hotels/countByType");
   const [images, setImages] = useState([]);
 
   useEffect(() => {
