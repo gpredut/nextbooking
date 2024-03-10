@@ -25,7 +25,7 @@ const PropertyList = () => {
         "Loading..."
       ) : (
         <>
-          {data &&
+          {Array.isArray(data) &&
             data.map((item, i) => (
               <div className="pListItem" key={i}>
                 <img src={images[i]} alt="" className="pListImg" />
