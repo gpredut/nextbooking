@@ -4,7 +4,7 @@ import "./featuredProperties.css";
 
 const FeaturedProperties = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const { data, loading } = useFetch("/hotels?featured=true&limit=4");
+  const { data, loading } = useFetch("https://cors-anywhere.herokuapp.com/https://nextbooking-api.vercel.app/api/hotels?featured=true&limit=4");
 
   // Function to handle image loading
   const handleImageLoad = () => {
