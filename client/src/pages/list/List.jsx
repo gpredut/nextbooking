@@ -18,7 +18,7 @@ const List = () => {
   const [max, setMax] = useState(999);
 
   const { data, loading, reFetch } = useFetch(
-    `/api/hotels/countByType?city=${destination}&min=${min}&max=${max}`
+    `https://nextbooking-api.vercel.app/api/hotels/countByType?city=${destination}&min=${min}&max=${max}`
   );
 
   const handleClick = () => {
