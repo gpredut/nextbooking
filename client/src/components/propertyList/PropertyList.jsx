@@ -3,7 +3,7 @@ import useFetch from "../hooks/useFetch.js";
 import "./propertyList.css";
 
 const PropertyList = () => {
-  const { data, loading, error } = useFetch("https://nextbooking-api.vercel.app/api/hotels/countByType");
+  const { data, loading, error } = useFetch("https://cors-anywhere.herokuapp.com/https://nextbooking-api.vercel.app/api/hotels/countByType");
   const [images, setImages] = useState([]);
 
   useEffect(() => {
