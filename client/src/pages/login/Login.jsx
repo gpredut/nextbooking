@@ -20,17 +20,15 @@ const Login = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     if (!credentials.username || !credentials.password) {
-      // Check if username or password is empty
       dispatch({ type: "LOGIN_FAILURE", payload: { message: "Please enter both username and password." } });
       return;
     }
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post("https://nextbooking-client.vercel.app/api/auth/login", credentials);
+      const res = await axios.post("/api/auth/login", credentials); 
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
       navigate("/");
     } catch (err) {
-      // Display a generic error message for login failures
       dispatch({ type: "LOGIN_FAILURE", payload: { message: "Login failed. Please check your credentials and try again." } });
     }
   };
