@@ -1,37 +1,60 @@
+import { useEffect, useState } from 'react';
 import useFetch from "../hooks/useFetch.js";
-import "./featuredProperties.css";
+import "./propertyList.css";
 
-const FeaturedProperties = () => {
-  const { data, loading, error } = useFetch("/hotels?featured=true&limit=4");
+const PropertyList = () => {
+  const { data, loading } = useFetch("https://nextbooking-api.vercel.app/api/hotels/countByType");
+  const [images, setImages] = useState([]);
 
-  if (loading) {
-    // Render loading message
-    return <div>Loading, please wait...</div>;
-  }
+  useEffect(() => {
+    // Ensure all images are loaded before rendering
+    Promise.all(
+      data.map((item) => loadImage(item.imageUrl))
+    )
+    .then((loadedImages) => {
+      setImages(loadedImages);
+    })
+    .catch((error) => {
+      console.error('Error loading images:', error);
+    });
+  }, [data]);
 
-  if (error || !Array.isArray(data)) {
-    // Render error message or other UI when data is not available
-    return <div>Error loading properties</div>;
-  }
+  const loadImage = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to load image');
+      }
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error('Error loading image:', error);
+      return null;
+    }
+  };
 
   return (
-    <div className="fp">
-      {data.map((item) => (
-        <div className="fpItem" key={item._id}>
-          {item.photos && item.photos.length > 0 && (
-            <img src={item.photos[0]} alt="" className="fpImg" />
-          )}
-          <div className="fpInfo">
-            <span className="fpName">{item.name}</span>
-            <span className="fpCity">{item.city}</span>
-          </div>
-          <span className="fpPrice">
-            Starting from ${item.cheapestPrice}
-          </span>
-        </div>
-      ))}
+    <div className="pList">
+      {loading ? (
+        "Loading..."
+      ) : (
+        <>
+          {data &&
+            data.map((item, i) => (
+              <div className="pListItem" key={item.type}>
+                <img src={images[i]} alt={item.type} className="pListImg" />
+                <div className="pListTitles">
+                  <h1>{item.type}</h1>
+                  <h2>
+                    {item.count} {item.type}
+                  </h2>
+                </div>
+              </div>
+            ))}
+        </>
+      )}
     </div>
   );
 };
 
-export default FeaturedProperties;
+export default PropertyList;
