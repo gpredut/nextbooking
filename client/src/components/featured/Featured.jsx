@@ -13,6 +13,10 @@ const Featured = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Response is not in JSON format');
+        }
         const jsonData = await response.json();
         setCitiesData(jsonData);
       } catch (error) {
