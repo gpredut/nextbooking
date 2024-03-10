@@ -18,8 +18,10 @@ const Featured = () => {
           throw new Error('Response is not in JSON format');
         }
         const jsonData = await response.json();
+        console.log(jsonData); // Log fetched data to see its structure and content
         setCitiesData(jsonData);
       } catch (error) {
+        console.error('Error fetching data:', error); // Log error for debugging
         setError(error.message);
       } finally {
         setLoading(false);
@@ -44,14 +46,14 @@ const Featured = () => {
       ) : (
         <>
           {citiesData.map((cityData, index) => (
-            <div className="featuredItem" key={cityData.name}>
+            <div className="featuredItem" key={index}>
               <img
                 src={images[index]}
                 alt=""
                 className="featuredImg"
               />
               <div className="featuredTitles">
-                <h1>{cityData.name}</h1>
+                <h1>{cityData.city}</h1>
                 <h2>{cityData.count} properties</h2>
               </div>
             </div>
