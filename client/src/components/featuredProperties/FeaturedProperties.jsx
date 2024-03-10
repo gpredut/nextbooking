@@ -15,7 +15,7 @@ const FeaturedProperties = () => {
         "Loading, please wait"
       ) : (
         <>
-          {data ? (
+          {Array.isArray(data) && data.length > 0 ? (
             data.map((item) => (
               <div className="fpItem" key={item._id}>
                 {/* Check if photos exist */}
@@ -32,7 +32,7 @@ const FeaturedProperties = () => {
               </div>
             ))
           ) : (
-            <div>No data available</div>
+            <div>No featured properties available</div>
           )}
         </>
       )}
