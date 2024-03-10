@@ -9,7 +9,7 @@ const Featured = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/hotels/countByCity?cities=bucharest,sinaia,hunedoara");
+        const response = await fetch("https://nextbooking-api.vercel.app/api/hotels/countByCity?cities=bucharest,sinaia,hunedoara");
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
