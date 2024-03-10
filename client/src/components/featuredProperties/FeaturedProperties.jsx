@@ -1,60 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useFetch from "../hooks/useFetch.js";
-import "./propertyList.css";
+import "./featuredProperties.css";
 
-const PropertyList = () => {
-  const { data, loading } = useFetch("https://nextbooking-api.vercel.app/api/hotels/countByType");
-  const [images, setImages] = useState([]);
+const FeaturedProperties = () => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const { data, loading } = useFetch("/hotels?featured=true&limit=4");
 
-  useEffect(() => {
-    // Ensure all images are loaded before rendering
-    Promise.all(
-      data.map((item) => loadImage(item.imageUrl))
-    )
-    .then((loadedImages) => {
-      setImages(loadedImages);
-    })
-    .catch((error) => {
-      console.error('Error loading images:', error);
-    });
-  }, [data]);
-
-  const loadImage = async (url) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to load image');
-      }
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
-    } catch (error) {
-      console.error('Error loading image:', error);
-      return null;
-    }
+  // Function to handle image loading
+  const handleImageLoad = () => {
+    setImagesLoaded(true);
   };
 
   return (
-    <div className="pList">
+    <div className="fp">
       {loading ? (
-        "Loading..."
+        "Loading, please wait..."
       ) : (
         <>
-          {data &&
-            data.map((item, i) => (
-              <div className="pListItem" key={item.type}>
-                <img src={images[i]} alt={item.type} className="pListImg" />
-                <div className="pListTitles">
-                  <h1>{item.type}</h1>
-                  <h2>
-                    {item.count} {item.type}
-                  </h2>
-                </div>
+          {data && data.map((item) => (
+            <div className="fpItem" key={item._id}>
+              {/* Check if photos exist */}
+              {item.photos && item.photos.length > 0 ? (
+                <img
+                  src={item.photos[0]}
+                  alt=""
+                  className="fpImg"
+                  onLoad={handleImageLoad} // Add onLoad event handler
+                />
+              ) : (
+                <div className="fpImgPlaceholder" /> // Placeholder if no photo
+              )}
+              <div className="fpInfo">
+                <span className="fpName">{item.name}</span>
+                <span className="fpCity">{item.city}</span>
               </div>
-            ))}
+              <span className="fpPrice">
+                Starting from ${item.cheapestPrice}
+              </span>
+            </div>
+          ))}
+          {/* Show loading message if images are still loading */}
+          {!imagesLoaded && <div className="fpLoading">Loading images...</div>}
         </>
       )}
     </div>
   );
 };
 
-export default PropertyList;
+export default FeaturedProperties;
