@@ -6,12 +6,11 @@ import "./login.css";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    password: undefined,
+    username: "",
+    password: "",
   });
 
   const { loading, error, dispatch } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,13 +19,19 @@ const Login = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+    if (!credentials.username || !credentials.password) {
+      // Check if username or password is empty
+      dispatch({ type: "LOGIN_FAILURE", payload: { message: "Please enter both username and password." } });
+      return;
+    }
     dispatch({ type: "LOGIN_START" });
     try {
       const res = await axios.post("/auth/login", credentials);
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
       navigate("/");
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
+      // Display a generic error message for login failures
+      dispatch({ type: "LOGIN_FAILURE", payload: { message: "Login failed. Please check your credentials and try again." } });
     }
   };
 
@@ -35,22 +40,24 @@ const Login = () => {
       <div className="lContainer">
         <input
           type="text"
-          placeholder="username"
+          placeholder="Username"
           id="username"
+          value={credentials.username}
           onChange={handleChange}
           className="lInput"
         />
         <input
           type="password"
-          placeholder="password"
+          placeholder="Password"
           id="password"
+          value={credentials.password}
           onChange={handleChange}
           className="lInput"
         />
         <button disabled={loading} onClick={handleClick} className="lButton">
-          Login
+          {loading ? 'Logging in...' : 'Login'}
         </button>
-        {error && <span>{error.message}</span>}
+        {error && <span className="error">{error.message}</span>}
       </div>
     </div>
   );
