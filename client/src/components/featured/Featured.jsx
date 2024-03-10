@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './featured.css';
 
 const Featured = () => {
-  const [data, setData] = useState([]);
+  const [citiesData, setCitiesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,7 +14,7 @@ const Featured = () => {
           throw new Error('Failed to fetch data');
         }
         const jsonData = await response.json();
-        setData(jsonData);
+        setCitiesData(jsonData);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -39,16 +39,16 @@ const Featured = () => {
         "Error fetching data"
       ) : (
         <>
-          {data.map((city, index) => (
-            <div className="featuredItem" key={city.name}>
+          {citiesData.map((cityData, index) => (
+            <div className="featuredItem" key={cityData.name}>
               <img
                 src={images[index]}
                 alt=""
                 className="featuredImg"
               />
               <div className="featuredTitles">
-                <h1>{city.name}</h1>
-                <h2>{city.count} properties</h2>
+                <h1>{cityData.name}</h1>
+                <h2>{cityData.count} properties</h2>
               </div>
             </div>
           ))}
