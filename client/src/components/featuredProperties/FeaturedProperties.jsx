@@ -4,7 +4,7 @@ import "./featuredProperties.css";
 
 const FeaturedProperties = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const { data, loading } = useFetch("https://cors-anywhere.herokuapp.com/https://nextbooking-api.vercel.app/api/hotels?featured=true&limit=4");
+  const { data, loading, error } = useFetch("/hotels?featured=true&limit=4");
 
   // Function to handle image loading
   const handleImageLoad = () => {
@@ -15,9 +15,11 @@ const FeaturedProperties = () => {
     <div className="fp">
       {loading ? (
         "Loading, please wait..."
+      ) : error ? (
+        `Error fetching data: ${error}`
       ) : (
         <>
-          {Array.isArray(data) && data.map((item) => (
+          {data && data.map((item) => (
             <div className="fpItem" key={item._id}>
               {/* Check if photos exist */}
               {item.photos && item.photos.length > 0 ? (
