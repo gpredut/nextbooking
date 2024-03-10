@@ -55,7 +55,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(8800, () => {
-  connect();
+export const handler = async (req, res) => {
+  await connect();
   console.log("Connected to backend.");
-});
+  res.status(200).json({ message: "Connected to backend." });
+};
+);
