@@ -2,76 +2,63 @@
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import express from "express";
+import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/users.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 dotenv.config();
 
-const connect = async () => {
+const app = express();
+
+// Connect to MongoDB
+const connectToDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO);
     console.log("Connected to MongoDB.");
   } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
     throw error;
   }
 };
 
-mongoose.connection.on("disconnected", () => {
-  console.log("MongoDB disconnected!");
+connectToDB();
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["https://nextbooking-client.vercel.app"],
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// Routes
+app.get("/", (req, res) => {
+  res.json("Hello");
 });
 
-// Define handler functions for each route
-export const usersHandler = async (req, res) => {
-  // Placeholder logic for handling users route
-  try {
-    // Perform users-related logic here
-    res.status(200).json({ message: "Users data retrieved successfully" });
-  } catch (error) {
-    // Handle errors
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+app.use("/api/auth", authRoute);
+app.use("/api/users", usersRoute);
+app.use("/api/hotels", hotelsRoute);
+app.use("/api/rooms", roomsRoute);
 
-export const hotelsHandler = async (req, res) => {
-  // Placeholder logic for handling hotels route
-  try {
-    // Perform hotels-related logic here
-    res.status(200).json({ message: "Hotels data retrieved successfully" });
-  } catch (error) {
-    // Handle errors
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+// Error handling middleware
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong!";
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+  });
+});
 
-export const roomsHandler = async (req, res) => {
-  // Placeholder logic for handling rooms route
-  try {
-    // Perform rooms-related logic here
-    res.status(200).json({ message: "Rooms data retrieved successfully" });
-  } catch (error) {
-    // Handle errors
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// Main handler function
-export default async function handler(req, res) {
-  // Connect to the database
-  await connect();
-
-  // Log message
-  console.log("Connected to backend.");
-
-  // Determine which route to handle
-  if (req.url.startsWith("/api/users")) {
-    return usersHandler(req, res);
-  } else if (req.url.startsWith("/api/hotels")) {
-    return hotelsHandler(req, res);
-  } else if (req.url.startsWith("/api/rooms")) {
-    return roomsHandler(req, res);
-  } else {
-    // Handle unknown routes
-    res.status(404).json({ message: "Route not found" });
-  }
-}
+// Export handler function
+export default app;
