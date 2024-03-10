@@ -3,29 +3,29 @@ import "./featuredProperties.css";
 
 const FeaturedProperties = () => {
   const { data, loading } = useFetch("/hotels?featured=true&limit=4");
+
+  // Check if data is an array before mapping
+  if (!Array.isArray(data)) {
+    // Render loading message or other UI when data is not available
+    return <div>Loading, please wait...</div>;
+  }
+
   return (
     <div className="fp">
-      {loading ? (
-        "Loading, please wait"
-      ) : (
-        <>
-          {data.map((item) => (
-            <div className="fpItem" key={item._id}>
-              <img src={item.photos[0]} alt="" className="fpImg" />
-              <div className="fpInfo">
-                <span className="fpName">{item.name}</span>
-                <span className="fpCity">{item.city}</span>
-              </div>
-              <span className="fpPrice">
-                Starting from ${item.cheapestPrice}
-              </span>
-            </div>
-          ))}
-        </>
-      )}
+      {data.map((item) => (
+        <div className="fpItem" key={item._id}>
+          <img src={item.photos[0]} alt="" className="fpImg" />
+          <div className="fpInfo">
+            <span className="fpName">{item.name}</span>
+            <span className="fpCity">{item.city}</span>
+          </div>
+          <span className="fpPrice">
+            Starting from ${item.cheapestPrice}
+          </span>
+        </div>
+      ))}
     </div>
   );
 };
 
 export default FeaturedProperties;
-
