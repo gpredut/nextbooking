@@ -18,7 +18,7 @@ const List = () => {
   const [max, setMax] = useState(999);
 
   const { data, loading, reFetch } = useFetch(
-    `/hotels?city=${destination}&min=${min}&max=${max}`
+    `/api/hotels/countByType?city=${destination}&min=${min}&max=${max}`
   );
 
   const handleClick = () => {
@@ -126,3 +126,4 @@ const List = () => {
 };
 
 export default List;
+
